@@ -1,0 +1,2 @@
+#!/bin/bash
+avconv -i ${1:-test}.mkv -acodec libvo_aacenc -ab 128k -ac 2 -vcodec libx264 -preset slow -crf 22 -threads 0 ${1:-test}.mp4
