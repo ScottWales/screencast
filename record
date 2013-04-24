@@ -4,4 +4,4 @@
 ./timer.py
 
 # Record the screen
-avconv -f alsa -ac 2 -i pulse -f x11grab -r 30 -s hd1080 -i :0.0+0,25 ${1:-test}.mkv
+avconv -f alsa -ac 2 -i pulse -f x11grab -r 30 -s hd1080 -i :0.0+0,40 ${1:-test}.mkv
