@@ -1,2 +1,13 @@
 #!/bin/bash
-avconv -i ${1:-test}.mkv -acodec libvo_aacenc -ab 128k -ac 2 -vcodec libx264 -preset slow -crf 22 -threads 0 ${1:-test}.mp4
+
+# Get the audio
+avconv -i ${1:-test}.mkv ${1:-test.wav}
+
+# Hipass & loudness
+sox $in.wav $in.processed.wav highpass 10 loudness -6
+
+# Recombine & convert to x264
+avconv -i $in.mkv -i $in.processed.wav -map 0:1 -map 1:0 -acodec aac -ab 128k -ac 2 -vcodec libx264 -preset slow -threads 4 ${1:-test}.mp4
+
+# Cleanup
+rm $in.wav $in.processed.wav
