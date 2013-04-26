@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <libavformat/avformat.h>
 #include <libavdevice/avdevice.h>
@@ -9,6 +10,25 @@
  *
  *  Swap between desktop, desktop + camera inset and camera fullscreen
  */
+
+void connectDesktop(AVFormatContext ** desktop) {
+
+    AVInputFormat * iformat = av_find_input_format("x11grab");
+    const char * display = getenv("DISPLAY");
+
+    // Set up options
+    AVDictionary * options = NULL;
+    int flags = 0;
+    av_dict_set(&options, "video_size", "hd1080", flags);
+    av_dict_set(&options, "framerate", "30", flags);
+    av_dict_set(&options, "show_region", "1", flags);
+
+    // Open the connection
+    int ierr = avformat_open_input(desktop, "0:0", iformat, &options);
+    if (ierr) fprintf(stderr,"Error opening desktop\n");
+    
+    av_dict_free(&options);
+}
 
 int main() {
     AVFormatContext * desktop    = NULL;
@@ -21,10 +41,8 @@ int main() {
 
     AVInputFormat * iformat = NULL;
 
-    iformat = av_find_input_format("x11grab");
     // Connect devices to each context
-    iformat = av_find_input_format("x11grab");
-    avformat_open_input(&desktop, "0:0", iformat, NULL);
+    connectDesktop(&desktop);
     iformat = av_find_input_format("video4linux2");
     avformat_open_input(&camera, "/dev/video0", iformat, NULL);
     iformat = av_find_input_format("alsa");
