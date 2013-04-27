@@ -1,0 +1,5 @@
+#include <libavformat/avformat.h>
+
+int main() {
+    return 0;
+}
